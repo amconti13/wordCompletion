@@ -2,67 +2,126 @@
 
 import datetime
 date = datetime.date.today()
-
-print("------------------------------------------------------------------\n"
-      + "Arianna Conti\t\t\t\t\t " + str(date)
-      + "\nCSCI 3351\t\t\t\t\t Word Completion\n"
-      + "------------------------------------------------------------------\n")
-
-#Ask the user for the name of a file that contains the text to analyze:
-filename = input("Enter file that contains the text to analyze: ")
-file = open(filename, "r")
-worddict = {}
 longest = 0
-#Open the file and read the lines of text:
-for line in file :
-    
-    #Break each line into words:
-    wordlist = line.split()
 
-    #Strip out all of the special symbols:
-    for index in range(0, len(wordlist)) : #for the length of the wordlist
-        word = wordlist[index]
+print("\n--------------------------------------------------------------------",
+      "\nArianna Conti\t\t\t\t\t ", str(date),
+      "\nCSCI 3351\t\t\t\t\t Word Completion\n",
+      "\n--------------------------------------------------------------------",
+      "\nThis program takes a file and the start of a word and returns the",
+      "\nlikely set of completed words and the percentage of how likely each ",
+      "\nword is the proper completion.")
+
+#-------------------------------------------------------------------------------
+#Read in and return lines from file
+def get_datalines(filename = "" ) :
+    if not filename :
+        filename = input("\nEnter file that contains the text to analyze: ")
+    file = open(filename, "r")
+    listOfLines = file.readlines()
+    file.close()
+    return listOfLines
+
+#-------------------------------------------------------------------------------
+#Split the line into words and clean them up
+def clean(line) :
+    for word in line.split():
         word = word.strip(",.?!'\"()#$@^&*<>{}[]|_+-=")
-        word = word.upper() #can do either lower or upper
-        
-        #For length of word
-        for wordlen in (len(wordlen) for wordlen in word.split()):
-            if wordlen > longest : #calculate length of longest word
-                longest = wordlen
-            
-            if wordlen > 1 :
-                if worddict.get(word) == None: #add to dictionary
-                    worddict[word] = 1
-                else :
-                    worddict[word] = worddict[word] + 1 #increment int
-file.close()
-l = [None]*longest
+        word = word.upper()
+        yield word
 
-for word in worddict :                          #FOR elements in dict
-    letters = list(word)                        #make word into list
+#-------------------------------------------------------------------------------
+#Make dictionary of words and the amount it shows up
+def get_wordCountDict( lines ) :
+    global longest
+    wc = {}                                         #wordcount dictionary
+    for line in lines :                             #FOR each line
+        for w in clean(line) :                      #FOR each clean word
+            for wl in (len(l) for l in w.split()):  #word length
+                if wl > longest :                   #get longest word length
+                   longest = wl
+                if wl > 1 :                         #IF word is longer than 1
+                    if wc.get(w) == None:           #IF not in dictionary
+                        wc[w] = 1                   #Add to dictionary
+                    else :                          #Increment number associated
+                        wc[w] = wc[w] + 1           #   with word in dictionary
+    return wc
+
+#-------------------------------------------------------------------------------
+#List of Dicitonaries
+def get_listOfDictionaries(wordCountDictionary) :
+    global longest
+    l = [None]*longest
+    for word in wordCountDictionary :               #FOR elements in dict
+        letters = list(word)
+        for i in range(0,len(letters)) :            #FOR letters in word
+            if l[i] == None :                       #IF no dictionary
+                words = [word]                      #make list
+                l[i] = {letters[i]: words }         #create dictionary
+            else:                                   #ELSE
+                temp = l[i]                         #temp dict to manipulate
+                if letters[i] in temp :             #IF key already exists
+                    words = temp[letters[i]]        #list of existing words
+                    words.append(word)              #append new word
+                    temp.update({letters[i]:words}) #update dict element
+                else:                               #ELSE
+                    temp[letters[i]] = [word]       #add dict element
+                l[i] = temp                         #save final dict into list
+    return l
+
+#-------------------------------------------------------------------------------
+#Intersects the two lists
+def intersect(list1, list2) :
+    list = []
+    for x in range(0,len(list1)):
+        for y in range(0,len(list2)):
+            if list1[x] == list2[y]:
+                list.append(list1[x])
+    return list
+
+#-------------------------------------------------------------------------------
+#Dictionary with possible words and possibility percentage
+def getWordPossibility(wc, w) :
+    t = 0
+    for i in range(0, len(w)) :                     #FOR all the possible words
+        t = wc[w[i]] + t                            #Total up amount of words
+    for i in range(0,len(w)) :                      #FOR all the possible words
+        possDict[w[i]] = ((wc[w[i]] / t) * 100)     #Make dict with word and %
+    return possDict
+
+#-------------------------------------------------------------------------------
+lines = get_datalines( )
+wordcount = get_wordCountDict( lines )
+l = get_listOfDictionaries( wordcount )
+
+cont = 'y'
+possWords = []                                      #possible words
+
+while cont == 'y' :
+    possDict = {}                                   #possibility dictionary
     
-    for i in range(0,len(letters)) :            #FOR letters in word
-        if l[i] == None :                       #IF no dictionary
-            words = [word]                      #make list
-            l[i] = {letters[i]: words }         #create dictionary
-        
-        else:                                   #ELSE
-            temp = l[i]                         #temp dict to manipulate
-            if letters[i] in temp :             #IF key already exists
-                words = temp[letters[i]]        #list of existing words
-                words.append(word)              #append new word
-                temp.update({letters[i]:words}) #update dict element
-            else:                               #ELSE
-                temp[letters[i]] = [word]       #add dict element
-            l[i] = temp                         #save final dict into list
+    part = input( "\nEnter a starting portion of a word: " )
+    part = list( part.upper() )
+    
+    for i in range(0, len(part)) :                  #FOR each letter from input
+        if i == 0 :                                 #IF first letter
+            possWords = l[i][part[i]]               #Make list of possible words
+        else:                                       #ELSE narrow list by
+            possWords = intersect(l[i][part[i]], possWords) #list intersection
 
+    possDict = getWordPossibility(wordcount, possWords) #Make final dictionary
+    sortedPoss = sorted(possDict, key=possDict.__getitem__,reverse = True)
 
-#file.close()
+    print()                                         #print
+    for i in range(0, 5) :
+        if len(sortedPoss) == i :
+            break
+        print(round(possDict[sortedPoss[i]]), "% ",
+              "chance the word is", sortedPoss[i])
+            #look up set width
+    cont = input("\nAgain?(y/n): ")
 
-    #Second, add the word into a data structure that is keeping track of word information for the completion process. This data structure has 3 basic parts.
-        #The top level part is a list that will have as many elements in it as the number of characters in the longest word seen so far. Each element in this list will be a dictionary which is indexed by the 26 letters of the alphabet.
+#Sort by key:
+#sorted(wordcount, key=wordcount.__getitem__, reverse = True)
+#Found:http://pythoncentral.io/how-to-sort-python-dictionaries-by-key-or-value/
 
-        #The value for each entry in the dictionary will be a set of words. A word is added into this structure as follows.
-            #The word is first added to the set contained in the dictionary corresponding to slot 0 in the list, indexed by the key of the first letter in the word.
-            #Then, the second letter of the word is used to index into the dictionary corresponding to slot 1 in the list to add the word to that set. This continues for the remaining letters in the word.
-#So this means that the word "help" would be added to the set of words that have an h as their first letter, the set having e as the second letter, the set for l as the third letter, and then p as the fourth letter.
