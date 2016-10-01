@@ -5,8 +5,8 @@ date = datetime.date.today()
 longest = 0
 
 print("\n--------------------------------------------------------------------",
-      "\nArianna Conti\t\t\t\t\t ", str(date),
-      "\nCSCI 3351\t\t\t\t\t Word Completion\n",
+      "\nArianna Conti\t\t\t\t\t\t ", str(date),
+      "\nCSCI 3351\t\t\t\t\t     Word Completion",
       "\n--------------------------------------------------------------------",
       "\nThis program takes a file and the start of a word and returns the",
       "\nlikely set of completed words and the percentage of how likely each ",
@@ -26,7 +26,7 @@ def get_datalines(filename = "" ) :
 #Split the line into words and clean them up
 def clean(line) :
     for word in line.split():
-        word = word.strip(",.?!'\"()#$@^&*<>{}[]|_+-=")
+        word = word.strip(",'.?;!\"()#$@^&*<>{}[]|_+=") #glitchy
         word = word.upper()
         yield word
 
@@ -100,8 +100,8 @@ possWords = []                                      #possible words
 while cont == 'y' :
     possDict = {}                                   #possibility dictionary
     
-    part = input( "\nEnter a starting portion of a word: " )
-    part = list( part.upper() )
+    p = input( "\nEnter a starting portion of a word: " )
+    part = list( p.upper() )
     
     for i in range(0, len(part)) :                  #FOR each letter from input
         if i == 0 :                                 #IF first letter
@@ -109,16 +109,18 @@ while cont == 'y' :
         else:                                       #ELSE narrow list by
             possWords = intersect(l[i][part[i]], possWords) #list intersection
 
-    possDict = getWordPossibility(wordcount, possWords) #Make final dictionary
-    sortedPoss = sorted(possDict, key=possDict.__getitem__,reverse = True)
+    if possWords == [] :
+        print(p, "is not in this text.")
+    else :
+        possDict = getWordPossibility(wordcount,possWords)#Make final dictionary
+        sortedPoss = sorted(possDict, key=possDict.__getitem__,reverse = True)
 
-    print()                                         #print
-    for i in range(0, 5) :
-        if len(sortedPoss) == i :
-            break
-        print(round(possDict[sortedPoss[i]]), "% ",
-              "chance the word is", sortedPoss[i])
-            #look up set width
+        print()                                      #print
+        for i in range(0, 5) :
+            if len(sortedPoss) == i :
+                break
+            print('{:5}'.format(round(possDict[sortedPoss[i]],2)),
+                   "% chance the word is", sortedPoss[i])
     cont = input("\nAgain?(y/n): ")
 
 #Sort by key:

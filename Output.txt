@@ -1,0 +1,78 @@
+
+-------------------------------------------------------------------- 
+Arianna Conti						  2016-10-01 
+CSCI 3351					     Word Completion 
+-------------------------------------------------------------------- 
+This program takes a file and the start of a word and returns the 
+likely set of completed words and the percentage of how likely each  
+word is the proper completion.
+
+Enter file that contains the text to analyze: Book1.txt
+
+Enter a starting portion of a word: i
+
+31.58 % chance the word is IN
+14.99 % chance the word is IT
+  8.9 % chance the word is IS
+ 5.69 % chance the word is IF
+ 3.45 % chance the word is ITS
+
+Again?(y/n): y
+
+Enter a starting portion of a word: hi
+
+57.56 % chance the word is HIS
+23.87 % chance the word is HIM
+  4.0 % chance the word is HIMSELF
+ 2.05 % chance the word is HIGH
+ 2.05 % chance the word is HISTORY
+
+Again?(y/n): y
+
+Enter a starting portion of a word: probably
+
+100.0 % chance the word is PROBABLY
+
+Again?(y/n): y
+
+Enter a starting portion of a word: hello
+hello is not in this text.
+
+Again?(y/n): n
+Ariannas-MacBook-Pro:wordCompletion Conti$ 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------------------------------------- 
+Arianna Conti						  2016-10-01 
+CSCI 3351					     Word Completion 
+-------------------------------------------------------------------- 
+This program takes a file and the start of a word and returns the 
+likely set of completed words and the percentage of how likely each  
+word is the proper completion.
+
+Enter file that contains the text to analyze: Book2.txt
+
+Enter a starting portion of a word: hello
+hello is not in this text.
+
+Again?(y/n): y
+
+Enter a starting portion of a word: no
+
+46.78 % chance the word is NOT
+18.81 % chance the word is NO
+7.02 % chance the word is NOW
+4.25 % chance the word is NOR
+2.29 % chance the word is NOTHING
+
+Again?(y/n): y
+
+Enter a starting portion of a word: n
+
+25.08 % chance the word is NOT
+10.08 % chance the word is NO
+3.76 % chance the word is NOW
+3.12 % chance the word is NAME
+2.76 % chance the word is NEW
+
+Again?(y/n): n
+Ariannas-MacBook-Pro:wordCompletion Conti$ 
